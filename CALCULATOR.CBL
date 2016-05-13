@@ -18,9 +18,11 @@
            10  RESULT              PIC S9(5)V9(3).
        01  DROP-LEAD-ZEROES        PIC -ZZ,ZZZ.999.
        PROCEDURE DIVISION.
+
        BEGIN.
             DISPLAY "Please input first operand".
             ACCEPT OPERAND1.
+
        INPUT-OPERATOR.
             DISPLAY "Please input operator".
             ACCEPT OPERATOR.
@@ -29,7 +31,7 @@
             PERFORM CALCULATION.
             PERFORM PREPARE-FOR-OUTPUT.
             DISPLAY "The result is " DROP-LEAD-ZEROES.
-            STOP RUN.
+            PERFORM CONTINUATION.
 
        CALCULATION.
             IF OPERATOR EQUALS "+" THEN
@@ -55,5 +57,9 @@
        PREPARE-FOR-OUTPUT.
             ADD RESULT TO ZERO
             GIVING DROP-LEAD-ZEROES ROUNDED.
+
+       CONTINUATION.
+           MOVE RESULT TO OPERAND1.
+           PERFORM INPUT-OPERATOR.
 
        END PROGRAM CALCULATOR.
