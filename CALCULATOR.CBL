@@ -10,13 +10,13 @@
        DATA DIVISION.
        FILE SECTION.
        WORKING-STORAGE SECTION.
-       01  NUMS.
-           10  OPERANDS.
+       01  FULL-OPERATION.
+           10  OPERATION.
                20  OPERAND1        PIC S9(5)V9(3).
+               20  OPERATOR        PIC A.
                20  OPERAND2        PIC S9(5)V9(3).
            10  RESULT              PIC S9(5)V9(3).
-           10  DROP-LEAD-ZEROES    PIC -ZZ,ZZZ.999.
-       01  OPERATOR                PIC A.
+       01  DROP-LEAD-ZEROES        PIC -ZZ,ZZZ.999.
        PROCEDURE DIVISION.
        BEGIN.
             DISPLAY "Please input first operand".
