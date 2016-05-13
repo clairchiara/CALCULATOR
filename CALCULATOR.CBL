@@ -7,59 +7,99 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. CALCULATOR.
        AUTHOR CLAIR MARCHESANI.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+           CLASS VALID-NUMERIC IS
+           '0' THROUGH '9'
+           '-'
+           '.'
+           ' '
+           CLASS VALID-OPERATOR IS
+           "+"
+           "-"
+           "x"
+           "*"
+           "/"
+           ":"
+           "^".
        DATA DIVISION.
        FILE SECTION.
        WORKING-STORAGE SECTION.
+       01  NUM-INPUT               PIC X(9).
        01  FULL-OPERATION.
-           10  OPERATION.
-               20  OPERAND1        PIC S9(5)V9(3).
-               20  OPERATOR        PIC A.
-               20  OPERAND2        PIC S9(5)V9(3).
-           10  RESULT              PIC S9(5)V9(3).
+           02  OPERATION.
+               03  OPERAND1        PIC S9(5)V9(3).
+               03  OPERATOR        PIC A.
+               03  OPERAND2        PIC S9(5)V9(3).
+           02  RESULT              PIC S9(5)V9(3).
        01  DROP-LEAD-ZEROES        PIC -ZZ,ZZZ.999.
        PROCEDURE DIVISION.
 
        BEGIN.
-            DISPLAY "Please input first operand".
-            ACCEPT OPERAND1.
+           DISPLAY "Please input first operand".
+           ACCEPT NUM-INPUT.
+           PERFORM CHECK-INPUT.
+           MOVE NUM-INPUT TO OPERAND1.
 
        INPUT-OPERATOR.
-            DISPLAY "Please input operator".
-            ACCEPT OPERATOR.
-            DISPLAY "Please input second operand".
-            ACCEPT OPERAND2.
-            PERFORM CALCULATION.
-            PERFORM PREPARE-FOR-OUTPUT.
-            DISPLAY "The result is " DROP-LEAD-ZEROES.
-            PERFORM CONTINUATION.
+           DISPLAY "Please input operator, enter nothing to terminate".
+           ACCEPT OPERATOR.
+           PERFORM CHECK-OPEATOR.
+           DISPLAY "Please input second operand".
+           ACCEPT NUM-INPUT.
+           PERFORM CHECK-INPUT.
+           MOVE NUM-INPUT TO OPERAND2.
+           PERFORM CALCULATION.
+           PERFORM PREPARE-FOR-OUTPUT.
+           DISPLAY "The result is " DROP-LEAD-ZEROES.
+           PERFORM CONTINUATION.
 
        CALCULATION.
-            IF OPERATOR EQUALS "+" THEN
-                COMPUTE RESULT = OPERAND1 + OPERAND2
-            ELSE IF OPERATOR EQUALS "-" THEN
-                COMPUTE RESULT = OPERAND1 - OPERAND2
-            ELSE IF OPERATOR EQUALS "x" OR "*" THEN
-                COMPUTE RESULT = OPERAND1 * OPERAND2
-            ELSE IF OPERATOR EQUALS "/" OR ":" THEN
-                COMPUTE RESULT = OPERAND1 / OPERAND2
-            ELSE IF OPERATOR EQUALS "^"
-                COMPUTE RESULT = OPERAND1 ** OPERAND2
-            ELSE
-                DISPLAY "Incorrect operator!"
-                PERFORM INCORRECT-OPERATOR
-                PERFORM CALCULATION
-            END-IF.
+           IF OPERATOR EQUALS "+" THEN
+               COMPUTE RESULT = OPERAND1 + OPERAND2
+           ELSE IF OPERATOR EQUALS "-" THEN
+               COMPUTE RESULT = OPERAND1 - OPERAND2
+           ELSE IF OPERATOR EQUALS "x" OR "*" THEN
+               COMPUTE RESULT = OPERAND1 * OPERAND2
+           ELSE IF OPERATOR EQUALS "/" OR ":" THEN
+               COMPUTE RESULT = OPERAND1 / OPERAND2
+           ELSE IF OPERATOR EQUALS "^"
+               COMPUTE RESULT = OPERAND1 ** OPERAND2
+           ELSE
+               DISPLAY "Incorrect operator!"
+               PERFORM INCORRECT-OPERATOR
+               PERFORM CALCULATION
+           END-IF.
 
        INCORRECT-OPERATOR.
-            DISPLAY "Please input operator again".
-            ACCEPT OPERATOR.
+           DISPLAY "Please input operator again".
+           ACCEPT OPERATOR.
+           PERFORM CHECK-OPEATOR.
+
+       INCORRECT-OPERAND.
+           DISPLAY "Please input operand again".
+           ACCEPT NUM-INPUT.
+           PERFORM CHECK-INPUT.
 
        PREPARE-FOR-OUTPUT.
-            ADD RESULT TO ZERO
-            GIVING DROP-LEAD-ZEROES ROUNDED.
+           ADD RESULT TO ZERO
+           GIVING DROP-LEAD-ZEROES ROUNDED.
 
        CONTINUATION.
            MOVE RESULT TO OPERAND1.
            PERFORM INPUT-OPERATOR.
+
+       CHECK-INPUT.
+           IF NUM-INPUT IS NOT VALID-NUMERIC THEN
+               PERFORM INCORRECT-OPERAND
+           END-IF.
+
+       CHECK-OPEATOR.
+           IF OPERATOR EQUALS '' THEN
+               STOP RUN
+           ELSE IF OPERATOR IS NOT VALID-OPERATOR THEN
+               PERFORM INCORRECT-OPERATOR
+           END-IF.
 
        END PROGRAM CALCULATOR.
