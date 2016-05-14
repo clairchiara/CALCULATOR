@@ -15,6 +15,7 @@
            '-'
            '.'
            ' '
+           '+'
            CLASS VALID-OPERATOR IS
            "+"
            "-"
@@ -27,6 +28,8 @@
        FILE SECTION.
        WORKING-STORAGE SECTION.
        01  NUM-INPUT               PIC X(9).
+       01  NUM-INPUT-DOT-COUNTER   PIC 9(5).
+       01  NUM-INPUT-SIGN-COUNTER  PIC 9(5).
        01  FULL-OPERATION.
            02  OPERATION.
                03  OPERAND1        PIC S9(5)V9(3).
@@ -37,22 +40,22 @@
        PROCEDURE DIVISION.
 
        BEGIN.
-           DISPLAY "Please input first operand".
-           ACCEPT NUM-INPUT.
-           PERFORM CHECK-INPUT.
+           DISPLAY "Please input first operand"
+           ACCEPT NUM-INPUT
+           PERFORM CHECK-INPUT
            MOVE NUM-INPUT TO OPERAND1.
 
        INPUT-OPERATOR.
-           DISPLAY "Please input operator, enter nothing to terminate".
-           ACCEPT OPERATOR.
-           PERFORM CHECK-OPEATOR.
-           DISPLAY "Please input second operand".
-           ACCEPT NUM-INPUT.
-           PERFORM CHECK-INPUT.
-           MOVE NUM-INPUT TO OPERAND2.
-           PERFORM CALCULATION.
-           PERFORM PREPARE-FOR-OUTPUT.
-           DISPLAY "The result is " DROP-LEAD-ZEROES.
+           DISPLAY "Please input operator, enter nothing to terminate"
+           ACCEPT OPERATOR
+           PERFORM CHECK-OPEATOR
+           DISPLAY "Please input second operand"
+           ACCEPT NUM-INPUT
+           PERFORM CHECK-INPUT
+           MOVE NUM-INPUT TO OPERAND2
+           PERFORM CALCULATION
+           PERFORM PREPARE-FOR-OUTPUT
+           DISPLAY "The result is " DROP-LEAD-ZEROES
            PERFORM CONTINUATION.
 
        CALCULATION.
@@ -73,13 +76,13 @@
            END-IF.
 
        INCORRECT-OPERATOR.
-           DISPLAY "Please input operator again".
-           ACCEPT OPERATOR.
+           DISPLAY "Please input operator again"
+           ACCEPT OPERATOR
            PERFORM CHECK-OPEATOR.
 
        INCORRECT-OPERAND.
-           DISPLAY "Please input operand again".
-           ACCEPT NUM-INPUT.
+           DISPLAY "Please input operand again"
+           ACCEPT NUM-INPUT
            PERFORM CHECK-INPUT.
 
        PREPARE-FOR-OUTPUT.
@@ -87,11 +90,18 @@
            GIVING DROP-LEAD-ZEROES ROUNDED.
 
        CONTINUATION.
-           MOVE RESULT TO OPERAND1.
+           MOVE RESULT TO OPERAND1
            PERFORM INPUT-OPERATOR.
 
        CHECK-INPUT.
-           IF NUM-INPUT IS NOT VALID-NUMERIC THEN
+           MOVE 0 TO NUM-INPUT-DOT-COUNTER
+           MOVE 0 TO NUM-INPUT-SIGN-COUNTER
+           INSPECT NUM-INPUT TALLYING NUM-INPUT-DOT-COUNTER FOR ALL '.'
+           INSPECT NUM-INPUT TALLYING NUM-INPUT-SIGN-COUNTER FOR ALL '-'
+           INSPECT NUM-INPUT TALLYING NUM-INPUT-SIGN-COUNTER FOR ALL '+'
+           IF NUM-INPUT IS NOT VALID-NUMERIC
+               OR NUM-INPUT-DOT-COUNTER IS GREATER THAN 1
+               OR NUM-INPUT-SIGN-COUNTER IS GREATER THAN 1 THEN
                PERFORM INCORRECT-OPERAND
            END-IF.
 
