@@ -27,6 +27,7 @@
        DATA DIVISION.
        FILE SECTION.
        WORKING-STORAGE SECTION.
+       01  INITIAL-QUESTION        PIC A(1).
        01  NUM-INPUT               PIC X(9).
        01  NUM-INPUT-DOT-COUNTER   PIC 9(5).
        01  NUM-INPUT-SIGN-COUNTER  PIC 9(5).
@@ -40,6 +41,11 @@
        PROCEDURE DIVISION.
 
        BEGIN.
+           DISPLAY
+           "Would you like to use the expression solver instead?"
+           ACCEPT INITIAL-QUESTION
+           IF INITIAL-QUESTION EQUALS 'Y' THEN
+           CALL "EXPRESSION-SOLVER"
            DISPLAY "Please input first operand"
            ACCEPT NUM-INPUT
            PERFORM CHECK-INPUT
