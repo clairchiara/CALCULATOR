@@ -7,6 +7,22 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. EXPRESSION-SOLVER.
        AUTHOR CLAIR MARCHESANI.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SPECIAL-NAMES.
+           CLASS VALID-NUMERIC IS
+           '0' THROUGH '9'
+           '-'
+           '.'
+           ' '
+           CLASS VALID-OPERATOR IS
+           "+"
+           "-"
+           "x"
+           "*"
+           "/"
+           ":"
+           "^".
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        LINKAGE SECTION.
